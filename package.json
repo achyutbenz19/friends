@@ -15,9 +15,11 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@cartesia/cartesia-js": "^1.0.3",
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
     "expo": "~51.0.28",
+    "expo-av": "~14.0.7",
     "expo-camera": "^15.0.16",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.9",
@@ -28,6 +30,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "groq-sdk": "^0.7.0",
     "nativewind": "^2.0.11",
     "openai": "^4.62.1",
     "react": "18.2.0",

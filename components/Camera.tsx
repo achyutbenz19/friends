@@ -3,23 +3,51 @@ import { useState, useRef, useEffect } from 'react';
 import { Button, Text, TouchableOpacity, View } from 'react-native';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import { observe } from '../lib/ai';
-import * as Speech from 'expo-speech';
+import Cartesia from "@cartesia/cartesia-js";
+import { WebPlayer } from "@cartesia/cartesia-js";
 
 export default function Camera() {
     const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [aiResponse, setAiResponse] = useState<string | null>(null);
     const cameraRef = useRef<CameraView>(null);
+    const cartesia = useRef(new Cartesia({
+
+    }));
+    const player = useRef(new WebPlayer({ bufferDuration: 500 }));
+
 
     useEffect(() => {
         if (aiResponse) {
-            speak(aiResponse)
+            speak(aiResponse);
         }
-    }, [aiResponse])
+    }, [aiResponse]);
 
-    const speak = (text: string) => {
-        Speech.speak(text);
-    }
+    const speak = async (text: string) => {
+        try {
+            console.log(text)
+            const websocket = cartesia.current.tts.websocket({
+                container: "raw",
+                encoding: "pcm_f32le",
+                sampleRate: 44100
+            });
+
+            await websocket.connect();
+
+            const response = await websocket.send({
+                model_id: "sonic-english",
+                voice: {
+                    mode: "id",
+                    id: "a0e99841-438c-4a64-b679-ae501e7d6091",
+                },
+                transcript: text
+            });
+
+            await player.current.play(response.source);
+        } catch (error) {
+            console.error('Error speaking:', error);
+        }
+    };
 
     if (!permission) {
         return <View />;
