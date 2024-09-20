@@ -4,7 +4,7 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function imageChatBot(base64Image: string): Promise<string> {
+export async function observe(base64Image: string): Promise<string> {
     const chatCompletion = await client.chat.completions.create({
         messages: [
             {

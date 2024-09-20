@@ -1,14 +1,25 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button, Text, TouchableOpacity, View } from 'react-native';
 import { TapGestureHandler } from 'react-native-gesture-handler';
-import { imageChatBot } from '../lib/ai';
+import { observe } from '../lib/ai';
+import * as Speech from 'expo-speech';
 
 export default function Camera() {
     const [facing, setFacing] = useState<CameraType>('back');
     const [permission, requestPermission] = useCameraPermissions();
-    const [aiResponse, setAiResponse] = useState<string | null>(null); // New state for AI response
+    const [aiResponse, setAiResponse] = useState<string | null>(null);
     const cameraRef = useRef<CameraView>(null);
+
+    useEffect(() => {
+        if (aiResponse) {
+            speak(aiResponse)
+        }
+    }, [aiResponse])
+
+    const speak = (text: string) => {
+        Speech.speak(text);
+    }
 
     if (!permission) {
         return <View />;
@@ -32,7 +43,6 @@ export default function Camera() {
             const photo = await cameraRef.current.takePictureAsync();
             const imageUrl = photo!.uri;
 
-            // Convert image to base64
             const base64Image = await fetch(imageUrl)
                 .then(response => response.blob())
                 .then(blob => new Promise((resolve) => {
@@ -47,7 +57,7 @@ export default function Camera() {
                     throw new Error('Data URL is not a string');
                 });
 
-            const response = await imageChatBot(base64Image);
+            const response = await observe(base64Image);
             setAiResponse(response); // Update state with AI response
             console.log(response);
         }
