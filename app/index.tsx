@@ -1,11 +1,16 @@
+import Camera from "@/components/Camera";
 import { Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 
 export default function Index() {
   return (
-    <View
-      className="bg-red-800 w-full h-screen"
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <GestureHandlerRootView className='flex-1'>
+      <View
+        className="h-full"
+      >
+        <Camera />
+      </View>
+    </GestureHandlerRootView>
   );
 }
